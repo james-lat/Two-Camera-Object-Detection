@@ -1,0 +1,17 @@
+path: content/data
+
+# Image folders RELATIVE to the path above
+train: train/images
+val: val/images
+
+# Number of classes
+nc: 6
+
+# Class names from the Kaggle YAML
+names:
+  - b_fully_ripened
+  - b_half_ripened
+  - b_green
+  - l_fully_ripened
+  - l_half_ripened
+  - l_green

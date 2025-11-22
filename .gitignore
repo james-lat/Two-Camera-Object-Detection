@@ -1,0 +1,11 @@
+# Python venv
+.venv/
+
+# # YOLO data + annotations (your big tomato dataset)
+content/
+
+# # YOLO training outputs
+runs/
+
+# # Large model weights
+*.pt
