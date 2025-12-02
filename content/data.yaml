@@ -1,9 +1,0 @@
-path: content/ieee-mbl-cls
-train: images/train
-val: images/val
-
-names:
-  0: Damaged
-  1: Old
-  2: Ripe
-  3: Unripe

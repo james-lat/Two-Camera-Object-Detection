@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 6
+names: ['b_fully_ripened', 'b_green', 'b_half_ripened', 'l_fully_ripened', 'l_green', 'l_half_ripened']
+
+roboflow:
+  workspace: vedd-brxwm
+  project: tomato-segmentation-qmoq4
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/vedd-brxwm/tomato-segmentation-qmoq4/dataset/1
