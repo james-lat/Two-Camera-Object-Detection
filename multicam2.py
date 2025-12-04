@@ -6,16 +6,20 @@ import pyrealsense2
 from ultralytics import YOLO
 import threading 
 import time 
+
+#Setting screen resolution 
 RESOLUTION_WIDTH = 640 # pixels
 RESOLUTION_HEIGHT = 480 # pixels
 FRAME_RATE = 30  # fps
 
+#General setup, getting the weight locations moving model to cuda etc...
 os.chdir("../")
 ROOT_DIRECTORY = os.getcwd()
 WEIGHTS_LOCATION =  '/home/nvidia/tomatoe_rec/best.pt'
 MODEL = YOLO(WEIGHTS_LOCATION)
 MODEL.to('cuda')
 print(MODEL.task)
+#Setting up cameraThread task to be used later
 class CameraThread(threading.Thread):
     def __init__(self, serial, pipe, align, model, depth_scale, intrinsics): 
         super().__init__()
@@ -67,6 +71,7 @@ class CameraThread(threading.Thread):
                 annotated_frame = color_image.copy() 
                 current_3d_positions = {} 
 
+                #Using Yolos Segmentation Masks
                 if masks is not None:
                     mask_array = masks.data.cpu().numpy()  
 
@@ -82,7 +87,7 @@ class CameraThread(threading.Thread):
                             0
                         )
 
-
+                #Setting up bounding boxes
                 if boxes is not None:
                     for box in boxes:
                         box_copy = box.xyxy[0].cpu().numpy() 
@@ -96,7 +101,7 @@ class CameraThread(threading.Thread):
                         
                         if 0 <= u < RESOLUTION_WIDTH and 0 <= v < RESOLUTION_HEIGHT:
                             depth_value = aligned_depth_frame.get_distance(u, v)
-
+                            # Use the depth at the object's center to compute its 3D position
                             if depth_value > 0:
                                 point_3d = pyrealsense2.rs2_deproject_pixel_to_point(
                                     self.intrinsics, [u, v], depth_value)
@@ -154,6 +159,7 @@ def findDevices():
         
     return serials, contexts
 
+# Configure and start depth + color streams for all connected cameras
 def enableDevices(serials, contexts, RESOLUTION_WIDTH,RESOLUTION_HEIGHT, FRAME_RATE):
 
     pipelines = []
@@ -208,6 +214,7 @@ def Visualize(camera_threads):
 def pipelineStop(pipelines):
     pass 
 
+#Main Script
 def main():
     serials, contexts = findDevices()
     
@@ -226,7 +233,7 @@ def main():
         depth_scale = device.first_depth_sensor().get_depth_scale()
 
         color_profile = pyrealsense2.video_stream_profile(profile.get_stream(pyrealsense2.stream.color))
-        color_intrinsics = color_profile.get_intrinsics() ection!
+        color_intrinsics = color_profile.get_intrinsics()
 
         thread = CameraThread(serial, pipe, align, MODEL, depth_scale, color_intrinsics) 
         thread.start()
